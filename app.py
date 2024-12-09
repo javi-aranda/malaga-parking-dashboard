@@ -266,8 +266,6 @@ def main():
             st.warning("No hay resumen de estadísticas disponible.")
 
     with tab4:
-        st.header("Sobre el proyecto")
-
         st.markdown(read_file_contents("README.md"))
 
 
