@@ -2,14 +2,14 @@
 
 Este dashboard es parte de un proyecto para la visualización de datos de ocupación de parkings en Málaga.
 
-![Mapa de parkings de Málaga](./resources/dashboard_01.png)
+![Mapa de parkings de Málaga](https://github.com/javi-aranda/malaga-parking-dashboard/blob/master/resources/dashboard_01.png?raw=true)
 
 La información para nutrir la base de datos se obtiene del repositorio [Málaga Parking Data](https://github.com/javi-aranda/malaga-parking-data), que a su vez los recopila de forma automática del endpoint de consulta de datos abiertos del Ayuntamiento de Málaga desde mayo de 2022.
 
 En enero de 2024 el formato de los datos cambió, previamente había sensores de parkings que no estaban funcionando correctamente y se han descartado para su análisis.
 
 
-![Mapa de parkings de Málaga](./resources/dashboard_02.png)
+![Mapa de parkings de Málaga](https://github.com/javi-aranda/malaga-parking-dashboard/blob/master/resources/dashboard_01.png?raw=true)
 
 El código fuente de esta herramienta, así como la base de datos, está disponible en [Málaga Parking Dashboard](https://github.com/javi-aranda/malaga-parking-dashboard).
 
