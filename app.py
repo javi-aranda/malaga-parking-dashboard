@@ -33,7 +33,6 @@ def get_db_connection():
     logger.info(f"Conectando a la base de datos {DB_NAME}")
     return sqlite3.connect(DB_NAME)
 
-@st.cache_resource
 def get_all_parkings():
     """Devuelve todos los parkings."""
     conn = get_db_connection()
@@ -42,7 +41,6 @@ def get_all_parkings():
     conn.close()
     return parkings
 
-@st.cache_resource(ttl=TTL)
 def get_parking_occupancy(parking_id=None, start_date=None, end_date=None):
     """
     Recuperar información de los parkings con filtros opcionales.
