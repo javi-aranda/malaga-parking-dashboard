@@ -117,11 +117,8 @@ def ingest_parking_data():
     for root, _, files in os.walk(base_path):
         for file in files:
             if file.startswith("parking-data") and file.endswith(".csv"):
-                # Añadir loggers
-                logger.info(f"Root dir: {root}")
-
                 # Descomponer la ruta para obtener el timestamp
-                yyyy, mm, dd = root.split("/")[-1].split("\\")[-3:]
+                yyyy, mm, dd = os.path.normpath(root).split(os.sep)[-3:]
                 hour, minute = file.split(".")[0].split("-")[-1].split("_")
                 timestamp_str = f"{yyyy}-{mm}-{dd} {hour}:{minute}:00"
                 file_timestamp = datetime(
