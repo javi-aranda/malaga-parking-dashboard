@@ -192,8 +192,8 @@ def main():
     with tab3:
         start_datetime_fmt = start_datetime.strftime('%Y/%m/%d')
         end_datetime_fmt = end_datetime.strftime('%Y/%m/%d')
-        
-        st.header(f"Resumen de estadísticas entre {start_datetime_fmt} y {end_datetime_fmt}")
+
+        st.header(f"Resumen entre {start_datetime_fmt} y {end_datetime_fmt}")
         
         # Resumen de estadísticas'
         if not occupancy_data.is_empty():
