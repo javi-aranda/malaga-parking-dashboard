@@ -2,10 +2,12 @@ import os
 import logging
 import streamlit as st
 import sqlite3
+import folium
 import polars as pl
 import plotly.express as px
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+from streamlit_folium import st_folium
 
 load_dotenv()
 
@@ -13,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 DB_NAME = os.getenv("DB_NAME")
 TTL = 60 * 30
+MALAGA_COORDS = 36.7213, -4.4216
 
 def read_file_contents(file_path):
     """Wrapper para leer ficheros.
@@ -43,7 +46,7 @@ def get_all_parkings():
 
 def get_parking_occupancy(parking_id=None, start_date=None, end_date=None):
     """
-    Recuperar información de los parkings con filtros opcionales.
+    Recupera información de los parkings con filtros opcionales.
 
     Args:
         parking_id (str, optional): ID del parking
@@ -92,6 +95,57 @@ def get_parking_occupancy(parking_id=None, start_date=None, end_date=None):
 
     return df
 
+@st.cache_data(ttl=TTL, show_spinner=False)
+def get_latest_occupancy():
+    """Devuelve la última ocupación de cada parking."""
+    conn = get_db_connection()
+    query = """
+    WITH latest_timestamps AS (
+        SELECT parking_id, MAX(timestamp) AS max_timestamp
+        FROM parking_data
+        GROUP BY parking_id
+    )
+    SELECT pd.parking_id, p.name, p.latitude, p.longitude, 
+           ((p.total_spaces - pd.free_spaces) * 100 / p.total_spaces) AS occupancy_percentage
+    FROM parking_data pd
+    JOIN latest_timestamps lt ON pd.parking_id = lt.parking_id AND pd.timestamp = lt.max_timestamp
+    JOIN parkings p ON pd.parking_id = p.id
+    """
+    latest_occupancy = pl.read_database(query, conn)
+    conn.close()
+    return latest_occupancy
+
+def get_color(occupancy_percentage):
+    """Devuelve el color según el porcentaje de ocupación."""
+    if occupancy_percentage <= 50:
+        return 'green'
+    elif occupancy_percentage <= 70:
+        return 'yellow'
+    elif occupancy_percentage <= 85:
+        return 'orange'
+    elif occupancy_percentage <= 95:
+        return 'red'
+    else:
+        return 'purple'
+
+
+def create_map(latest_occupancy):
+    """Crea un mapa de Málaga con las áreas circulares de ocupación."""
+    m = folium.Map(location=MALAGA_COORDS, zoom_start=13.5)
+
+    for row in latest_occupancy.iter_rows(named=True):
+        folium.Circle(
+            location=[row["latitude"], row["longitude"]],
+            radius=100,
+            color=get_color(row["occupancy_percentage"]),
+            fill=True,
+            fill_color=get_color(row["occupancy_percentage"]),
+            fill_opacity=0.6,
+            popup=f"{row['name']}: {row['occupancy_percentage']:.2f}%"
+        ).add_to(m)
+
+    return m
+
 
 def main():
     st.set_page_config(page_title='Málaga Parking Dashboard', page_icon="🅿️", layout="centered")
@@ -138,14 +192,25 @@ def main():
     # Tabs de contenido
     tab1, tab2, tab3, tab4 = st.tabs(
         [
+            "Mapa",
             "Ocupación en el tiempo",
-            "Comparación de parkings",
-            "Resumen de estadísticas",
+            "Resumen",
             "Sobre el proyecto",
         ]
     )
 
     with tab1:
+        st.header("Mapa de ocupación actual")
+
+        latest_occupancy = get_latest_occupancy()
+        if not latest_occupancy.is_empty():
+            m = create_map(latest_occupancy)
+            st_folium(m, width=700, height=500)
+        else:
+            st.warning("No hay datos de ocupación disponibles.")
+
+
+    with tab2:
         st.header("Ocupación a lo largo del tiempo")
 
         if not occupancy_data.is_empty():
@@ -170,21 +235,6 @@ def main():
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.warning("Sin datos disponibles para el periodo seleccionado.")
-
-    with tab2:
-        st.header("Comparación de parkings")
-
-        if not occupancy_data.is_empty():
-            fig = px.box(
-                occupancy_data,
-                x="name",
-                y="occupancy_percentage",
-                title="Distribución de ocupación por parking",
-                labels={"occupancy_percentage": "Ocupación (%)", "name": "Parking"},
-            )
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.warning("Sin datos disponibles para comparar.")
 
     with tab3:
         start_datetime_fmt = start_datetime.strftime('%Y/%m/%d')
