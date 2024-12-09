@@ -2,3 +2,5 @@ polars==1.17.0
 streamlit==1.40.0
 python-dotenv==1.0.1
 matplotlib==3.9.3
+plotly-express==0.4.1
+
