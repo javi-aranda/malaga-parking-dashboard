@@ -1,4 +1,5 @@
 import os
+import logging
 import streamlit as st
 import sqlite3
 import polars as pl
@@ -7,6 +8,8 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 DB_NAME = os.getenv("DB_NAME")
 TTL = 60 * 30
@@ -25,8 +28,10 @@ def read_file_contents(file_path):
         content = f.read()
     return content
 
+@st.cache_resource
 def get_db_connection():
     """Crea conexión a la base de datos."""
+    logger.info(f"Conectando a la base de datos {DB_NAME}")
     return sqlite3.connect(DB_NAME)
 
 @st.cache_resource
