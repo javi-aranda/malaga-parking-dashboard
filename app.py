@@ -28,7 +28,6 @@ def read_file_contents(file_path):
         content = f.read()
     return content
 
-@st.cache_resource
 def get_db_connection():
     """Crea conexión a la base de datos."""
     logger.info(f"Conectando a la base de datos {DB_NAME}")
