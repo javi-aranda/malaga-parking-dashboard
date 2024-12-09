@@ -9,7 +9,7 @@ La información para nutrir la base de datos se obtiene del repositorio [Málaga
 En enero de 2024 el formato de los datos cambió, previamente había sensores de parkings que no estaban funcionando correctamente y se han descartado para su análisis.
 
 
-![Mapa de parkings de Málaga](https://github.com/javi-aranda/malaga-parking-dashboard/blob/master/resources/dashboard_01.png?raw=true)
+![Mapa de parkings de Málaga](https://github.com/javi-aranda/malaga-parking-dashboard/blob/master/resources/dashboard_02.png?raw=true)
 
 El código fuente de esta herramienta, así como la base de datos, está disponible en [Málaga Parking Dashboard](https://github.com/javi-aranda/malaga-parking-dashboard).
 
