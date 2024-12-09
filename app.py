@@ -93,6 +93,8 @@ def get_parking_occupancy(parking_id=None, start_date=None, end_date=None):
 
 
 def main():
+    st.set_page_config(page_title='Málaga Parking Dashboard', page_icon="🅿️", layout="centered")
+
     st.title("Málaga Parking Dashboard")
 
     st.sidebar.header("Filtros")
