@@ -128,7 +128,6 @@ def get_color(occupancy_percentage):
     else:
         return 'purple'
 
-
 def create_map(latest_occupancy):
     """Crea un mapa de Málaga con las áreas circulares de ocupación."""
     m = folium.Map(location=MALAGA_COORDS, zoom_start=13.5)
@@ -201,6 +200,15 @@ def main():
 
     with tab1:
         st.header("Mapa de ocupación actual")
+
+        st.markdown("""
+            ### Leyenda
+            - 🟢 Ocupación baja
+            - 🟡 Ocupación media
+            - 🟠 Ocupación alta
+            - 🔴 Ocupación muy elevada
+            - 🟣 Ocupación máxima
+        """)
 
         latest_occupancy = get_latest_occupancy()
         if not latest_occupancy.is_empty():
