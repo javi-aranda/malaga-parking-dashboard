@@ -147,7 +147,7 @@ def create_map(latest_occupancy):
 
 
 def main():
-    st.set_page_config(page_title='Málaga Parking Dashboard', page_icon="🅿️", layout="centered")
+    st.set_page_config(page_title='Málaga Parking Dashboard', page_icon="🅿️", layout="wide")
 
     st.title("Málaga Parking Dashboard")
 
@@ -201,19 +201,26 @@ def main():
     with tab1:
         st.header("Mapa de ocupación actual")
 
-        st.markdown("""
-            ### Leyenda
-            - 🟢 Ocupación baja
-            - 🟡 Ocupación media
-            - 🟠 Ocupación alta
-            - 🔴 Ocupación muy elevada
-            - 🟣 Ocupación máxima
-        """)
 
         latest_occupancy = get_latest_occupancy()
         if not latest_occupancy.is_empty():
-            m = create_map(latest_occupancy)
-            st_folium(m, width=700, height=500)
+
+            # Layout en dos columnas
+            col1, col2 = st.columns([9, 3])
+
+            with col1:
+                m = create_map(latest_occupancy)
+                st_folium(m, width=700, height=500)
+
+            with col2:
+                st.markdown("""
+                    ### Leyenda
+                    - 🟢 Ocupación baja
+                    - 🟡 Ocupación media
+                    - 🟠 Ocupación alta
+                    - 🔴 Ocupación muy elevada
+                    - 🟣 Ocupación máxima
+                """)
         else:
             st.warning("No hay datos de ocupación disponibles.")
 
