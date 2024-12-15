@@ -215,11 +215,15 @@ def main():
             with col2:
                 st.markdown("""
                     ### Leyenda
-                    - 🟢 Ocupación baja
-                    - 🟡 Ocupación media
-                    - 🟠 Ocupación alta
-                    - 🔴 Ocupación muy elevada
-                    - 🟣 Ocupación máxima
+                    🟢 Ocupación baja
+                            
+                    🟡 Ocupación media
+                            
+                    🟠 Ocupación alta
+                            
+                    🔴 Ocupación muy elevada
+                            
+                    🟣 Ocupación máxima
                 """)
         else:
             st.warning("No hay datos de ocupación disponibles.")
