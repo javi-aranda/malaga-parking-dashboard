@@ -216,13 +216,9 @@ def main():
                 st.markdown("""
                     ### Leyenda
                     🟢 Ocupación baja
-                            
                     🟡 Ocupación media
-                            
                     🟠 Ocupación alta
-                            
                     🔴 Ocupación muy elevada
-                            
                     🟣 Ocupación máxima
                 """)
         else:
