@@ -206,11 +206,11 @@ def main():
         if not latest_occupancy.is_empty():
 
             # Layout en dos columnas
-            col1, col2 = st.columns([9, 3])
+            col1, col2 = st.columns([10, 2])
 
             with col1:
                 m = create_map(latest_occupancy)
-                st_folium(m, width=900, height=500)
+                st_folium(m, width=1000, height=500)
 
             with col2:
                 st.markdown("""
