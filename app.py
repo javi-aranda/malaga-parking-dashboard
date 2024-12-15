@@ -210,7 +210,7 @@ def main():
 
             with col1:
                 m = create_map(latest_occupancy)
-                st_folium(m, width=700, height=500)
+                st_folium(m, width=900, height=500)
 
             with col2:
                 st.markdown("""
