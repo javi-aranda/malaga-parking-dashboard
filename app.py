@@ -206,7 +206,7 @@ def main():
         if not latest_occupancy.is_empty():
 
             # Layout en dos columnas
-            col1, col2 = st.columns([10, 2])
+            col1, col2 = st.columns([9, 3])
 
             with col1:
                 m = create_map(latest_occupancy)
