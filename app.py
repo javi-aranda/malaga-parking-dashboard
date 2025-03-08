@@ -209,8 +209,7 @@ def main():
             col1, col2 = st.columns([9, 3])
 
             with col1:
-                m = create_map(latest_occupancy)
-                st_folium(m, width=1000, height=500)
+                display_map(latest_occupancy)
 
             with col2:
                 st.markdown("""
@@ -286,6 +285,12 @@ def main():
 
     with tab4:
         st.markdown(read_file_contents("README.md"))
+
+
+@st.fragment
+def display_map(latest_occupancy):
+    m = create_map(latest_occupancy)
+    st_folium(m, width=1000, height=500)
 
 
 if __name__ == "__main__":
