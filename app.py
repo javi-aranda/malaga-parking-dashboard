@@ -264,10 +264,15 @@ def main():
         if not occupancy_data.is_empty():
             summary_stats = occupancy_data.group_by("name").agg(
                 [
+                    pl.col("total_spaces").first().alias("Plazas totales"),
                     pl.col("free_spaces")
                     .mean()
                     .round(0)
-                    .alias("Media de espacios libres"),
+                    .alias("Media espacios libres"),
+                    pl.col("occupied_spaces")
+                    .mean()
+                    .round(0)
+                    .alias("Media espacios ocupados"),
                     pl.col("occupancy_percentage")
                     .mean()
                     .round(2)
@@ -276,10 +281,84 @@ def main():
                     .median()
                     .round(2)
                     .alias("% Mediana ocupación"),
+                    pl.col("occupancy_percentage")
+                    .max()
+                    .round(2)
+                    .alias("% Máx ocupación"),
+                    pl.col("occupancy_percentage")
+                    .min()
+                    .round(2)
+                    .alias("% Mín ocupación"),
+                    pl.col("free_spaces")
+                    .min()
+                    .alias("Mínimo espacios libres"),
+                    pl.col("free_spaces")
+                    .max()
+                    .alias("Máximo espacios libres"),
                 ]
             )
 
-            st.dataframe(summary_stats)
+            st.dataframe(summary_stats, use_container_width=True)
+            
+            # Métricas adicionales de análisis temporal
+            st.subheader("Análisis temporal")
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                # Número total de registros por parking
+                registros_por_parking = occupancy_data.group_by("name").agg(
+                    pl.len().alias("Registros")
+                )
+                st.metric(
+                    "Total de registros en el período", 
+                    f"{occupancy_data.height:,}"
+                )
+                
+            with col2:
+                # Parking más ocupado en promedio
+                parking_mas_ocupado = summary_stats.filter(
+                    pl.col("% Medio ocupación") == pl.col("% Medio ocupación").max()
+                )["name"][0]
+                ocupacion_maxima = summary_stats.filter(
+                    pl.col("% Medio ocupación") == pl.col("% Medio ocupación").max()
+                )["% Medio ocupación"][0]
+                st.metric(
+                    "Parking más ocupado (promedio)",
+                    parking_mas_ocupado,
+                    f"{ocupacion_maxima}%"
+                )
+                
+            with col3:
+                # Parking menos ocupado en promedio
+                parking_menos_ocupado = summary_stats.filter(
+                    pl.col("% Medio ocupación") == pl.col("% Medio ocupación").min()
+                )["name"][0]
+                ocupacion_minima = summary_stats.filter(
+                    pl.col("% Medio ocupación") == pl.col("% Medio ocupación").min()
+                )["% Medio ocupación"][0]
+                st.metric(
+                    "Parking menos ocupado (promedio)",
+                    parking_menos_ocupado,
+                    f"{ocupacion_minima}%"
+                )
+                
+            # Gráfico de distribución de ocupación
+            st.subheader("Distribución de ocupación por parking")
+            
+            # Crear un histograma de ocupación
+            fig_hist = px.histogram(
+                occupancy_data.to_pandas(),
+                x="occupancy_percentage",
+                color="name",
+                title="Distribución de porcentajes de ocupación",
+                labels={
+                    "occupancy_percentage": "Porcentaje de ocupación (%)",
+                    "count": "Frecuencia"
+                },
+                nbins=20
+            )
+            st.plotly_chart(fig_hist, use_container_width=True)
         else:
             st.warning("No hay resumen de estadísticas disponible.")
 
