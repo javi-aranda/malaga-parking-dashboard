@@ -1,0 +1,7 @@
+polars==1.17.0
+streamlit==1.47.0
+python-dotenv==1.0.1
+matplotlib==3.9.3
+plotly-express==0.4.1
+folium==0.18.0
+streamlit-folium==0.23.2
